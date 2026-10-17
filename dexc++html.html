@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sự thức giấc của Tiny - Ngày 20/10</title>
+    <style>
+        /* Nền đen tuyền */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000000;
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace; /* Font chữ giống trong ảnh */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Khung chứa chữ */
+        .text-container {
+            text-align: center;
+            min-height: 150px; /* Giữ khung chữ cố định để nút không bị nhảy */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        /* Hiệu ứng chữ phát sáng trắng */
+        #story-text {
+            font-size: 28px;
+            letter-spacing: 3px;
+            line-height: 1.5;
+            text-shadow: 
+                0 0 5px #ffffff,
+                0 0 10px #ffffff,
+                0 0 20px #ffffff,
+                0 0 40px #ffffff;
+            transition: opacity 0.4s ease-in-out;
+        }
+
+        /* Khung chứa 2 nút bấm */
+        .buttons-container {
+            display: flex;
+            justify-content: center;
+            gap: 60px; /* Khoảng cách giữa 2 nút */
+            margin-top: 50px;
+            transition: opacity 0.4s ease;
+        }
+
+        /* Style cho 2 nút vuông màu xanh Neon */
+        .neon-btn {
+            width: 90px;
+            height: 90px;
+            background-color: #00ffff; /* Màu xanh Cyan */
+            border: none;
+            border-radius: 25px; /* Bo góc vuông mềm giống ảnh */
+            cursor: pointer;
+            /* Hiệu ứng tỏa sáng Neon */
+            box-shadow: 
+                0 0 20px #00ffff, 
+                0 0 40px #00ffff, 
+                0 0 80px #00ffff,
+                inset 0 0 20px #ffffff;
+            transition: transform 0.1s, box-shadow 0.2s;
+        }
+
+        /* Khi đưa chuột vào (trên máy tính) */
+        .neon-btn:hover {
+            box-shadow: 
+                0 0 30px #00ffff, 
+                0 0 60px #00ffff, 
+                0 0 100px #00ffff,
+                inset 0 0 25px #ffffff;
+        }
+
+        /* Khi bấm nút */
+        .neon-btn:active {
+            transform: scale(0.92); /* Nút lún xuống một chút */
+        }
+
+        /* Hiệu ứng mờ dần khi ẩn nút */
+        .hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Khung chứa câu chữ -->
+    <div class="text-container">
+        <div id="story-text">này cậu gì ơi</div>
+    </div>
+    
+    <!-- Khung chứa 2 nút bấm -->
+    <div class="buttons-container" id="btn-group">
+        <button class="neon-btn" onclick="nextStep()"></button>
+        <button class="neon-btn" onclick="nextStep()"></button>
+    </div>
+
+    <script>
+        // Kịch bản (Bạn có thể sửa chữ ở đây tùy thích)
+        const scriptContent = [
+            "này cậu gì ơi",
+            "Hôm nay tớ nhận lệnh từ<br>Dr D là để...",
+            "Mang đến cho cậu một<br>món quà bất ngờ! 🎁",
+            "Chúc cậu ngày 20/10<br>luôn xinh đẹp và rạng rỡ nhé! 🌻",
+            "Ahn Khoii gửi tặng cậu đó! ✨"
+        ];
+
+        let currentIndex = 0;
+        const textElement = document.getElementById("story-text");
+        const btnGroup = document.getElementById("btn-group");
+        let isAnimating = false; // Ngăn người dùng bấm quá nhanh làm lỗi chữ
+
+        function nextStep() {
+            if (isAnimating) return; // Nếu đang chuyển chữ thì không nhận click
+            if (currentIndex >= scriptContent.length - 1) return; // Hết kịch bản thì thôi
+
+            isAnimating = true;
+            currentIndex++;
+
+            // 1. Làm mờ chữ hiện tại
+            textElement.style.opacity = 0;
+
+            // 2. Đợi 0.4s cho chữ mờ hẳn, sau đó đổi chữ mới và hiện lên
+            setTimeout(() => {
+                textElement.innerHTML = scriptContent[currentIndex];
+                textElement.style.opacity = 1;
+                isAnimating = false; // Cho phép bấm tiếp
+
+                // Nếu là câu cuối cùng thì ẩn 2 nút xanh đi
+                if (currentIndex === scriptContent.length - 1) {
+                    btnGroup.classList.add("hidden");
+                }
+            }, 400);
+        }
+    </script>
+
+</body>
+</html>
