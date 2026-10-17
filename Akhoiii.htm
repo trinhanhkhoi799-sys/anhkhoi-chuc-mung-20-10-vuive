@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sự thức giấc của Tiny - Ngày 20/10</title>
+    <style>
+        /* Thiết lập nền đen tuyền */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000000;
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace; /* Font chữ giống máy đánh chữ trong ảnh */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Khung chứa nội dung */
+        .container {
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+        }
+
+        /* Hiệu ứng chữ phát sáng */
+        #story-text {
+            font-size: 24px;
+            line-height: 1.5;
+            letter-spacing: 2px;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.8), 0 0 15px rgba(255, 255, 255, 0.5);
+            transition: opacity 0.5s ease-in-out;
+            min-height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        /* Khung chứa 2 nút bấm */
+        .buttons-container {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-top: 60px;
+            transition: opacity 0.5s ease;
+        }
+
+        /* Style cho 2 nút vuông bo góc màu xanh neon */
+        .glow-btn {
+            width: 80px;
+            height: 80px;
+            background-color: #00ffff;
+            border: none;
+            border-radius: 20px; /* Bo góc giống trong ảnh */
+            cursor: pointer;
+            /* Hiệu ứng phát sáng neon */
+            box-shadow: 
+                0 0 20px #00ffff, 
+                0 0 40px #00ffff, 
+                0 0 60px #00ffff,
+                inset 0 0 15px rgba(255, 255, 255, 0.8);
+            transition: all 0.2s ease-in-out;
+        }
+
+        /* Hiệu ứng khi đưa chuột vào */
+        .glow-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 
+                0 0 30px #00ffff, 
+                0 0 60px #00ffff, 
+                0 0 90px #00ffff,
+                inset 0 0 20px rgba(255, 255, 255, 1);
+        }
+
+        /* Hiệu ứng khi bấm */
+        .glow-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Ẩn nút khi không cần thiết */
+        .hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Đoạn text hiển thị câu chuyện -->
+        <div id="story-text">này cậu gì ơi</div>
+        
+        <!-- 2 nút bấm phát sáng -->
+        <div class="buttons-container" id="buttons">
+            <button class="glow-btn" onclick="nextStep()"></button>
+            <button class="glow-btn" onclick="nextStep()"></button>
+        </div>
+    </div>
+
+    <script>
+        // Kịch bản câu chuyện
+        const story = [
+            "này cậu gì ơi",
+            "Hôm nay tớ nhận lệnh từ Dr D là để...",
+            "...mang đến cho cậu một món quà bí mật!",
+            "Nhắm mắt lại và ước một điều nhé...",
+            "Chúc cậu ngày 20/10 thật rạng rỡ, luôn vui vẻ và xinh đẹp như những đóa hoa! 🌸",
+            "- From Ahn Khoii with love -"
+        ];
+
+        let currentStep = 0;
+        const textElement = document.getElementById("story-text");
+        const buttonsContainer = document.getElementById("buttons");
+
+        function nextStep() {
+            currentStep++;
+
+            // Hiệu ứng mờ dần
+            textElement.style.opacity = 0;
+
+            setTimeout(() => {
+                if (currentStep < story.length) {
+                    textElement.innerHTML = story[currentStep];
+                    textElement.style.opacity = 1;
+                }
+                
+                // Nếu là câu cuối cùng (lời chúc), ẩn 2 nút đi
+                if (currentStep === story.length - 1) {
+                    buttonsContainer.classList.add("hidden");
+                    // Đổi màu chữ đoạn cuối cho lung linh hơn
+                    textElement.style.color = "#ff99cc";
+                    textElement.style.textShadow = "0 0 10px #ff99cc, 0 0 20px #ff99cc";
+                }
+            }, 500);
+        }
+    </script>
+
+</body>
+</html>
