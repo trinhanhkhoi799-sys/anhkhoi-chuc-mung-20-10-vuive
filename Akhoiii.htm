@@ -3,143 +3,397 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sự thức giấc của Tiny - Ngày 20/10</title>
+    <title>Gửi Thảo Nguyên - 20/10 Muộn</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        /* Thiết lập nền đen tuyền */
-        body {
+        /* CSS CƠ BẢN VÀ BACKGROUND */
+        * {
             margin: 0;
             padding: 0;
-            background-color: #000000;
-            color: #ffffff;
-            font-family: 'Courier New', Courier, monospace; /* Font chữ giống máy đánh chữ trong ảnh */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            font-family: 'Quicksand', sans-serif;
             overflow: hidden;
-        }
-
-        /* Khung chứa nội dung */
-        .container {
-            text-align: center;
-            width: 90%;
-            max-width: 600px;
-            position: relative;
-        }
-
-        /* Hiệu ứng chữ phát sáng */
-        #story-text {
-            font-size: 24px;
-            line-height: 1.5;
-            letter-spacing: 2px;
-            text-shadow: 0 0 8px rgba(255, 255, 255, 0.8), 0 0 15px rgba(255, 255, 255, 0.5);
-            transition: opacity 0.5s ease-in-out;
-            min-height: 100px;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
+            color: white;
         }
 
-        /* Khung chứa 2 nút bấm */
-        .buttons-container {
+        /* HIỆU ỨNG SAO / KÝ TỰ TOÁN HỌC BAY */
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* CONTAINER CHÍNH */
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+        }
+
+        /* LỊCH THÁNG 10 */
+        .calendar-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 20px 30px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.1);
+            animation: float 4s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+
+        .calendar-card h2 {
+            font-family: 'Dancing Script', cursive;
+            color: #ffb6c1;
+            font-size: 2.5rem;
+            text-shadow: 0 0 10px rgba(255, 105, 180, 0.8);
+            margin-bottom: 10px;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            font-size: 1rem;
+        }
+
+        .calendar-grid span {
+            padding: 5px;
+            border-radius: 50%;
+        }
+
+        .calendar-grid .highlight {
+            background: #ff69b4;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 0 15px #ff69b4;
+        }
+
+        /* NÚT MỞ THƯ */
+        .open-letter-btn {
+            background: linear-gradient(45deg, #ff69b4, #ff1493);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255, 20, 147, 0.6);
+            transition: transform 0.3s, box-shadow 0.3s;
+            z-index: 10;
+        }
+
+        .open-letter-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(255, 20, 147, 0.9);
+        }
+
+        /* CÁC MẢNH GIẤY BAY LƠ LỬNG */
+        .floating-note {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 182, 193, 0.3);
+            border-radius: 10px;
+            padding: 10px 15px;
+            font-size: 0.95rem;
+            color: #ffd1dc;
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.2);
+            backdrop-filter: blur(5px);
+            pointer-events: none;
+            animation: floatUp 10s linear infinite;
+            opacity: 0;
+        }
+
+        /* BỨC THƯ (MODAL) */
+        .letter-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
             display: flex;
             justify-content: center;
-            gap: 50px;
-            margin-top: 60px;
-            transition: opacity 0.5s ease;
-        }
-
-        /* Style cho 2 nút vuông bo góc màu xanh neon */
-        .glow-btn {
-            width: 80px;
-            height: 80px;
-            background-color: #00ffff;
-            border: none;
-            border-radius: 20px; /* Bo góc giống trong ảnh */
-            cursor: pointer;
-            /* Hiệu ứng phát sáng neon */
-            box-shadow: 
-                0 0 20px #00ffff, 
-                0 0 40px #00ffff, 
-                0 0 60px #00ffff,
-                inset 0 0 15px rgba(255, 255, 255, 0.8);
-            transition: all 0.2s ease-in-out;
-        }
-
-        /* Hiệu ứng khi đưa chuột vào */
-        .glow-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 
-                0 0 30px #00ffff, 
-                0 0 60px #00ffff, 
-                0 0 90px #00ffff,
-                inset 0 0 20px rgba(255, 255, 255, 1);
-        }
-
-        /* Hiệu ứng khi bấm */
-        .glow-btn:active {
-            transform: scale(0.95);
-        }
-
-        /* Ẩn nút khi không cần thiết */
-        .hidden {
+            align-items: center;
             opacity: 0;
             pointer-events: none;
+            transition: opacity 0.5s ease;
+            z-index: 100;
+        }
+
+        .letter-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .letter-content {
+            background: linear-gradient(135deg, #fff0f5, #ffe4e1);
+            padding: 40px 30px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            color: #4a2c2a;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 0 40px rgba(255, 105, 180, 0.6);
+            transform: translateY(20px);
+            transition: transform 0.5s ease;
+            border: 2px solid #ffb6c1;
+        }
+
+        .letter-modal.active .letter-content {
+            transform: translateY(0);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #ff69b4;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .close-btn:hover {
+            transform: scale(1.2);
+        }
+
+        /* AVATAR / ICON TOÁN HỌC */
+        .math-icon {
+            width: 90px;
+            height: 90px;
+            background: #ffe4e1;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.4);
+            border: 2px solid #ffb6c1;
+            color: #d11141;
+        }
+
+        .letter-content h3 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.2rem;
+            color: #d11141;
+            margin-bottom: 15px;
+        }
+
+        .letter-content p {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .letter-content .highlight-text {
+            color: #d11141;
+            font-weight: 700;
+        }
+
+        .signature {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.5rem;
+            color: #d11141;
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        /* KEYFRAMES ANIMATIONS */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 0.9; }
+            90% { opacity: 0.9; }
+            100% {
+                transform: translateY(-20vh) rotate(15deg);
+                opacity: 0;
+            }
         }
     </style>
 </head>
 <body>
 
+    <canvas id="starCanvas"></canvas>
+
     <div class="container">
-        <!-- Đoạn text hiển thị câu chuyện -->
-        <div id="story-text">này cậu gì ơi</div>
-        
-        <!-- 2 nút bấm phát sáng -->
-        <div class="buttons-container" id="buttons">
-            <button class="glow-btn" onclick="nextStep()"></button>
-            <button class="glow-btn" onclick="nextStep()"></button>
+        <!-- Bảng lịch 20/10 -->
+        <div class="calendar-card">
+            <h2>Tháng 10</h2>
+            <div class="calendar-grid">
+                <span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span><span>CN</span>
+                <span></span><span></span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span>
+                <span>13</span><span>14</span><span>15</span><span>16</span><span>17</span><span>18</span><span>19</span>
+                <span class="highlight">20</span><span>21</span><span>22</span><span>23</span><span>24</span><span>25</span><span>26</span>
+                <span>27</span><span>28</span><span>29</span><span>30</span><span>31</span>
+            </div>
+        </div>
+
+        <!-- Nút mở thư -->
+        <button class="open-letter-btn" onclick="openLetter()">Mở thư gửi Thảo Nguyên 💌</button>
+    </div>
+
+    <!-- Popup Bức Thư -->
+    <div class="letter-modal" id="letterModal">
+        <div class="letter-content">
+            <button class="close-btn" onclick="closeLetter()">✖</button>
+            <div class="math-icon">📐</div>
+            <h3>Gửi Thảo Nguyên,</h3>
+            <p>Chúc mừng ngày 20/10 <span class="highlight-text">(dù đã hơi muộn một chút)</span> đến cô gái tuyệt vời nhất!</p>
+            <p>Chúc cậu luôn vui vẻ, rạng rỡ và tràn đầy năng lượng tích cực mỗi ngày nhé.</p>
+            <p>Đặc biệt, chúc cho ước mơ trở thành <span class="highlight-text">cô giáo dạy Toán</span> của cậu sẽ sớm thành hiện thực. Mình tin rằng với sự kiên trì, thông minh và đam mê, cậu chắc chắn sẽ đứng trên bục giảng và truyền cảm hứng cho bao thế hệ học trò.</p>
+            <p>Cố lên nhé, cô giáo Toán tương lai ơi! ✨</p>
+            <div class="signature">From: Một người bạn ❤️</div>
         </div>
     </div>
 
     <script>
-        // Kịch bản câu chuyện
-        const story = [
-            "này cậu gì ơi",
-            "Hôm nay tớ nhận lệnh từ Dr D là để...",
-            "...mang đến cho cậu một món quà bí mật!",
-            "Nhắm mắt lại và ước một điều nhé...",
-            "Chúc cậu ngày 20/10 thật rạng rỡ, luôn vui vẻ và xinh đẹp như những đóa hoa! 🌸",
-            "- From Ahn Khoii with love -"
+        // 1. XỬ LÝ HIỆU ỨNG NỀN SAO VÀ KÝ TỰ TOÁN HỌC
+        const canvas = document.getElementById('starCanvas');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+        const mathSymbols = ['π', '∑', '∞', 'x²', '√', '+', '÷', '=', 'Δ'];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Star {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.isSymbol = Math.random() > 0.85; // 15% cơ hội là ký tự toán học
+                this.symbol = mathSymbols[Math.floor(Math.random() * mathSymbols.length)];
+                this.size = this.isSymbol ? Math.random() * 10 + 10 : Math.random() * 1.5;
+                this.speedY = Math.random() * 0.4 + 0.1;
+                this.opacity = Math.random();
+            }
+            update() {
+                this.y += this.speedY;
+                if (this.y > canvas.height + 20) {
+                    this.y = -20;
+                    this.x = Math.random() * canvas.width;
+                }
+                // Nhấp nháy cho các ngôi sao
+                if (!this.isSymbol) {
+                    this.opacity = Math.sin(Date.now() * 0.001 + this.x) * 0.5 + 0.5;
+                }
+            }
+            draw() {
+                if (this.isSymbol) {
+                    ctx.fillStyle = `rgba(255, 182, 193, ${this.opacity * 0.6})`; // Màu hồng nhạt cho toán học
+                    ctx.font = `${this.size}px Arial`;
+                    ctx.fillText(this.symbol, this.x, this.y);
+                } else {
+                    ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+        }
+
+        for (let i = 0; i < 200; i++) {
+            stars.push(new Star());
+        }
+
+        function animateStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            stars.forEach(star => {
+                star.update();
+                star.draw();
+            });
+            requestAnimationFrame(animateStars);
+        }
+        animateStars();
+
+        // 2. XỬ LÝ CÁC MẢNH GIẤY BAY LƠ LỬNG (LỜI CHÚC DÀNH RIÊNG CHO THẢO NGUYÊN)
+        const wishes = [
+            "Chúc Thảo Nguyên 20/10 muộn vui vẻ nhé! 🌸",
+            "Mong ước làm cô giáo dạy Toán của cậu sẽ sớm thành hiện thực! 📐",
+            "Dù hơi muộn nhưng chúc cậu luôn rạng rỡ và thành công! ✨",
+            "Cố lên cô giáo Toán tương lai ơi! 💖",
+            "Toán học có thể khó, nhưng ước mơ của cậu thì tuyệt đẹp! 📏",
+            "Gửi ngàn lời chúc tốt đẹp nhất đến Thảo Nguyên! 🌷",
+            "Chúc cậu luôn vui vẻ, học tập thật tốt nhé! 🧮",
+            "Nhất định sẽ trở thành một giáo viên Toán giỏi giang! 🌟"
         ];
 
-        let currentStep = 0;
-        const textElement = document.getElementById("story-text");
-        const buttonsContainer = document.getElementById("buttons");
+        function createFloatingNotes() {
+            const note = document.createElement('div');
+            note.classList.add('floating-note');
+            
+            // Lấy ngẫu nhiên một lời chúc
+            const randomWish = wishes[Math.floor(Math.random() * wishes.length)];
+            note.innerText = randomWish;
 
-        function nextStep() {
-            currentStep++;
+            // Vị trí ngẫu nhiên
+            note.style.left = Math.random() * 90 + 'vw';
+            note.style.animationDuration = (Math.random() * 5 + 8) + 's'; // Bay từ 8s đến 13s
+            
+            document.body.appendChild(note);
 
-            // Hiệu ứng mờ dần
-            textElement.style.opacity = 0;
-
+            // Xóa sau khi bay xong
             setTimeout(() => {
-                if (currentStep < story.length) {
-                    textElement.innerHTML = story[currentStep];
-                    textElement.style.opacity = 1;
-                }
-                
-                // Nếu là câu cuối cùng (lời chúc), ẩn 2 nút đi
-                if (currentStep === story.length - 1) {
-                    buttonsContainer.classList.add("hidden");
-                    // Đổi màu chữ đoạn cuối cho lung linh hơn
-                    textElement.style.color = "#ff99cc";
-                    textElement.style.textShadow = "0 0 10px #ff99cc, 0 0 20px #ff99cc";
-                }
-            }, 500);
+                note.remove();
+            }, 13000);
         }
-    </script>
 
+        // Tạo giấy bay liên tục
+        setInterval(createFloatingNotes, 1200);
+
+        // 3. XỬ LÝ ĐÓNG MỞ THƯ
+        function openLetter() {
+            document.getElementById('letterModal').classList.add('active');
+        }
+
+        function closeLetter() {
+            document.getElementById('letterModal').classList.remove('active');
+        }
+
+        // Đóng thư khi click ra ngoài
+        document.getElementById('letterModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeLetter();
+            }
+        });
+    </script>
 </body>
 </html>
